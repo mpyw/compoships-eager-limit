@@ -1,0 +1,45 @@
+{
+    "name": "mpyw/compoships-eager-limit",
+    "description": "topclaudy/compoships + staudenmeir/eloquent-eager-limit",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mpyw",
+            "email": "ryosuke_i_628@yahoo.co.jp",
+            "homepage": "https://github.com/mpyw"
+        },
+        {
+            "name": "Claudin J. Daniel",
+            "homepage": "https://github.com/topclaudy"
+        },
+        {
+            "name": "Jonas Staudenmeir",
+            "email": "mail@jonas-staudenmeir.de",
+            "homepage": "https://github.com/staudenmeir"
+        }
+    ],
+    "keywords": ["compoships", "composite", "eloquent", "eager", "limit", "laravel", "database"],
+    "autoload": {
+        "psr-4": {
+            "Mpyw\\ComposhipsEagerLimit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mpyw\\ComposhipsEagerLimit\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.2",
+        "illuminate/database": "^6.0 || ^7.0 || ^8.0",
+        "illuminate/support": "^6.0 || ^7.0 || ^8.0",
+        "awobaz/compoships": "^1.1",
+        "staudenmeir/eloquent-eager-limit": "^1.4"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^4.0",
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "ext-json": "*"
+    }
+}
