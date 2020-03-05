@@ -19,6 +19,19 @@ env:
   - DB=sqlsrv LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
   - DB=sqlsrv LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
 
+matrix:
+  # PHP 7.3 passes but 7.4 and 7.2 fails in Travis because of the SQLite driver version
+  # https://travis-ci.com/mpyw/compoships-eager-limit/builds/151876198
+  exclude:
+    - php: 7.4
+      env: DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
+    - php: 7.4
+      env: DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
+    - php: 7.2
+      env: DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
+    - php: 7.2
+      env: DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
+
 cache:
   directories:
     - ./vendor
