@@ -38,7 +38,7 @@
         "staudenmeir/eloquent-eager-limit": "^1.4"
     },
     "require-dev": {
-        "orchestra/testbench": "^4.0",
+        "orchestra/testbench": "^5.0",
         "friendsofphp/php-cs-fixer": "^2.14",
         "ext-json": "*"
     }
