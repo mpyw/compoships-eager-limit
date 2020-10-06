@@ -10,39 +10,72 @@ php:
   - 7.2
 
 env:
-  - DB=mysql LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
-  - DB=mysql LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
-  - DB=pgsql LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
-  - DB=pgsql LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
-  - DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
-  - DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
-  - DB=sqlsrv LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
-  - DB=sqlsrv LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
+  # MySQL
+  - DB=mysql LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
+  - DB=mysql LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^2.0
+  - DB=mysql LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^1.1.15
+  - DB=mysql LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^2.0
+  - DB=mysql LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^1.1.15
+  # PostgreSQL
+  - DB=pgsql LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
+  - DB=pgsql LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^2.0
+  - DB=pgsql LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^1.1.15
+  - DB=pgsql LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^2.0
+  - DB=pgsql LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^1.1.15
+  # SQLite
+  - DB=sqlite LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
+  - DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^2.0
+  - DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^1.1.15
+  - DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^2.0
+  - DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^1.1.15
+  # SQL Server
+  - DB=sqlsrv LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
+  - DB=sqlsrv LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^2.0
+  - DB=sqlsrv LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^1.1.15
+  - DB=sqlsrv LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^2.0
+  - DB=sqlsrv LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^1.1.15
 
 matrix:
-  # PHP 7.3 passes but 7.4 and 7.2 fails in Travis because of the SQLite driver version
-  # https://travis-ci.com/mpyw/compoships-eager-limit/builds/151876198
   exclude:
-    - php: 7.4
-      env: DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
-    - php: 7.4
-      env: DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
+    # Laravel 8.x drops PHP 7.2 support
     - php: 7.2
-      env: DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0
+      env: DB=mysql LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
     - php: 7.2
-      env: DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0
+      env: DB=pgsql LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
+    - php: 7.2
+      env: DB=sqlite LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
+    - php: 7.2
+      env: DB=sqlsrv LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
+    # ------
+    # PHP 7.3 passes but 7.4 and 7.2 fails in Travis because of the SQLite driver version
+    # https://travis-ci.com/mpyw/compoships-eager-limit/builds/151876198
+    - php: 7.4
+      env: DB=sqlite LARAVEL_VERSION=^8.0 TESTBENCH_VERSION=^6.0 COMPOSHIPS_VERSION=^2.0
+    - php: 7.4
+      env: DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^2.0
+    - php: 7.4
+      env: DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^1.1.15
+    - php: 7.4
+      env: DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^2.0
+    - php: 7.4
+      env: DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^1.1.15
+    - php: 7.2
+      env: DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^2.0
+    - php: 7.2
+      env: DB=sqlite LARAVEL_VERSION=^7.0 TESTBENCH_VERSION=^5.0 COMPOSHIPS_VERSION=^1.1.15
+    - php: 7.2
+      env: DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^2.0
+    - php: 7.2
+      env: DB=sqlite LARAVEL_VERSION=^6.0 TESTBENCH_VERSION=^4.0 COMPOSHIPS_VERSION=^1.1.15
 
 cache:
   directories:
     - ./vendor
     - $HOME/.composer/cache
 
-install:
-  - travis_retry composer update --no-interaction --no-suggest --prefer-dist --prefer-stable
-
 before_script:
   - mkdir -p build/logs
-  - composer require "laravel/framework:${LARAVEL_VERSION}" "orchestra/testbench:${TESTBENCH_VERSION}" --no-update
+  - composer require "laravel/framework:${LARAVEL_VERSION}" "orchestra/testbench:${TESTBENCH_VERSION}" "awobaz/compoships:${COMPOSHIPS_VERSION}" --no-update
   - composer update
   - cp tests/config/database.travis.php tests/config/database.php
   - mysql -e 'create database `test`;'
