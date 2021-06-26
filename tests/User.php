@@ -2,8 +2,6 @@
 
 namespace Mpyw\ComposhipsEagerLimit\Tests;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * Class User
  */

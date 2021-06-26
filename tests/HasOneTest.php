@@ -2,6 +2,7 @@
 
 namespace Mpyw\ComposhipsEagerLimit\Tests;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Mpyw\ComposhipsEagerLimit\Database\Eloquent\Relations\HasOne as MixedHasOne;
 
@@ -10,6 +11,8 @@ class HasOneTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Carbon::setTestNow('2020-01-01 00:00:00');
 
         $this->users[0] = User::create()->fresh();
         $this->users[1] = User::create()->fresh();
