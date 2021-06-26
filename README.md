@@ -4,8 +4,10 @@
 
 ## Requirements
 
-- PHP: ^7.2
+- PHP: ^7.3 || ^8.0
 - Laravel: ^6.0 || ^7.0 || ^8.0
+- [Compoships](https://github.com/topclaudy/compoships): ^2.0
+- [Eloquent Eager Limit](https://github.com/staudenmeir/eloquent-eager-limit): ^1.4
 
 ## Installing
 

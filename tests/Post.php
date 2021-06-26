@@ -2,7 +2,6 @@
 
 namespace Mpyw\ComposhipsEagerLimit\Tests;
 
-use Illuminate\Database\Eloquent\Model;
 use Mpyw\ComposhipsEagerLimit\ComposhipsEagerLimit;
 use Mpyw\ComposhipsEagerLimit\Database\Eloquent\Relations\HasMany as MixedHasMany;
 use Staudenmeir\EloquentEagerLimit\Relations\BelongsToMany;

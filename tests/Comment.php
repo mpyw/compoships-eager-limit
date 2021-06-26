@@ -3,7 +3,6 @@
 namespace Mpyw\ComposhipsEagerLimit\Tests;
 
 use Awobaz\Compoships\Database\Eloquent\Relations\BelongsTo as ComposhipsBelongsTo;
-use Illuminate\Database\Eloquent\Model;
 use Mpyw\ComposhipsEagerLimit\ComposhipsEagerLimit;
 use Mpyw\ComposhipsEagerLimit\Database\Eloquent\Relations\HasOne as MixedHasOne;
 

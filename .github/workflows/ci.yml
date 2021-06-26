@@ -1,0 +1,148 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql-5.7:
+        image: mysql:5.7
+        ports:
+          - '3306:3306'
+        env:
+          MYSQL_DATABASE: testing
+          MYSQL_USER: testing
+          MYSQL_PASSWORD: testing
+          MYSQL_ROOT_PASSWORD: testing
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=30s
+          --health-retries=5
+
+      mysql-8.0:
+        image: mysql:8.0
+        ports:
+          - '3307:3306'
+        env:
+          MYSQL_DATABASE: testing
+          MYSQL_USER: testing
+          MYSQL_PASSWORD: testing
+          MYSQL_ROOT_PASSWORD: testing
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=30s
+          --health-retries=5
+
+      postgres:
+        image: postgres:13.3
+        ports:
+          - '5432:5432'
+        env:
+          POSTGRES_DB: testing
+          POSTGRES_USER: testing
+          POSTGRES_PASSWORD: testing
+        options: >-
+          --health-cmd=pg_isready
+          --health-interval=10s
+          --health-timeout=30s
+          --health-retries=5
+
+      sqlsrv:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        ports:
+          - '1433:1433'
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: Password!
+        options: >-
+          --name sqlsrv
+          --health-cmd "echo quit | /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -l 1 -U sa -P Password!"
+
+    strategy:
+      matrix:
+        php: [8.0, 7.4, 7.3]
+        lib:
+          - { laravel: ^8.0, testbench: ^6.0 }
+          - { laravel: ^7.0, testbench: ^5.0 }
+          - { laravel: ^6.0, testbench: ^4.0 }
+        composer_flags: [--prefer-stable --prefer-lowest, --prefer-stable]
+        db: [mysql-5.7, mysql-8.0, pgsql, sqlite, sqlsrv]
+        include:
+          - php: 8.0
+            coverage: xdebug
+          - db: sqlsrv
+            pdo_suffix: -5.9.0preview1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: ${{ matrix.coverage }}
+          extension: pdo_${{ matrix.db }}${{ matrix.pdo_suffix }}
+
+      - name: Set up MySQL 8.0
+        if: matrix.db == 'mysql-8.0'
+        run: |
+          mysql \
+            --host=127.0.0.1 \
+            --port=3307 \
+            --user=root \
+            --password=testing <<< "
+              ALTER USER 'testing'@'%' IDENTIFIED WITH mysql_native_password BY 'testing';
+            "
+
+      - name: Set up SQLServer
+        if: matrix.db == 'sqlsrv'
+        run: |
+          docker exec sqlsrv \
+            /opt/mssql-tools/bin/sqlcmd \
+              -S 127.0.0.1 \
+              -U sa \
+              -P Password! \
+              -Q "create database [testing]"
+
+      - name: Adjust Package Versions
+        run: |
+          composer require "laravel/framework:${{ matrix.lib.laravel }}" --dev --no-update ${{ matrix.lib.composer_flags }}
+          if php -r 'exit((int)!version_compare(PHP_VERSION, "8", ">="));'; then
+            composer require "orchestra/testbench:>=4.14" --dev --no-update ${{ matrix.lib.composer_flags }}
+            composer require "phpunit/phpunit:>=9.3" --dev --no-update ${{ matrix.lib.composer_flags }}
+          else
+            composer require "orchestra/testbench:${{ matrix.lib.testbench }}" --dev --no-update ${{ matrix.lib.composer_flags }}
+          fi
+          composer update ${{ matrix.lib.composer_flags }}
+
+      - name: Show Important Package Versions
+        run: composer show | grep -E '(^awobaz/compoships)|(^staudenmeir/eloquent-eager-limit)|(^laravel/framework)|(^orchestra/testbench)|(^phpunit/phpunit)'
+
+      - name: Prepare Database Config
+        run: mv tests/config/database.github.php tests/config/database.php
+
+      - name: Prepare Coverage Directory
+        if: matrix.coverage == 'xdebug'
+        run: mkdir -p build/logs
+
+      - name: Test Collecting Coverage
+        if: matrix.coverage == 'xdebug'
+        run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+        env:
+          DB: ${{ matrix.db }}
+
+      - name: Test Without Collecting Coverage
+        if: matrix.coverage != 'xdebug'
+        run: vendor/bin/phpunit
+        env:
+          DB: ${{ matrix.db }}
+
+      - name: Upload Scrutinizer coverage
+        if: matrix.coverage == 'xdebug'
+        uses: sudo-bot/action-scrutinizer@latest
+        with:
+          cli-args: "--format=php-clover build/logs/clover.xml"
