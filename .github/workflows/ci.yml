@@ -71,9 +71,6 @@ jobs:
           - { laravel: ^6.0, testbench: ^4.0 }
         composer_flags: [--prefer-stable --prefer-lowest, --prefer-stable]
         db: [mysql-5.7, mysql-8.0, pgsql, sqlite, sqlsrv]
-        include:
-          - db: sqlsrv
-            pdo_suffix: -5.9.0preview1
 
     steps:
       - uses: actions/checkout@v2
@@ -83,7 +80,6 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: xdebug
-          extension: pdo_${{ matrix.db }}${{ matrix.pdo_suffix }}
 
       - name: Set up MySQL 8.0
         if: matrix.db == 'mysql-8.0'
