@@ -72,8 +72,6 @@ jobs:
         composer_flags: [--prefer-stable --prefer-lowest, --prefer-stable]
         db: [mysql-5.7, mysql-8.0, pgsql, sqlite, sqlsrv]
         include:
-          - php: 8.0
-            coverage: xdebug
           - db: sqlsrv
             pdo_suffix: -5.9.0preview1
 
@@ -84,7 +82,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          coverage: ${{ matrix.coverage }}
+          coverage: xdebug
           extension: pdo_${{ matrix.db }}${{ matrix.pdo_suffix }}
 
       - name: Set up MySQL 8.0
@@ -120,29 +118,43 @@ jobs:
           composer update ${{ matrix.lib.composer_flags }}
 
       - name: Show Important Package Versions
-        run: composer show | grep -E '(^awobaz/compoships)|(^staudenmeir/eloquent-eager-limit)|(^laravel/framework)|(^orchestra/testbench)|(^phpunit/phpunit)'
+        id: package-versions
+        run: |
+          composer show | grep -E '(^awobaz/compoships)|(^staudenmeir/eloquent-eager-limit)|(^laravel/framework)|(^orchestra/testbench)|(^phpunit/phpunit)'
+          echo '::set-output name=compoships::'$(composer show | grep -E '^(awobaz/compoships)' | awk '{print $2}')
+          echo '::set-output name=eloquent-eager-limit::'$(composer show | grep -E '^(staudenmeir/eloquent-eager-limit)' | awk '{print $2}')
+          echo '::set-output name=laravel::'$(composer show | grep -E '^(laravel/framework)' | awk '{print $2}')
 
       - name: Prepare Database Config
         run: mv tests/config/database.github.php tests/config/database.php
 
       - name: Prepare Coverage Directory
-        if: matrix.coverage == 'xdebug'
         run: mkdir -p build/logs
 
-      - name: Test Collecting Coverage
-        if: matrix.coverage == 'xdebug'
+      - name: Test
         run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
         env:
           DB: ${{ matrix.db }}
 
-      - name: Test Without Collecting Coverage
-        if: matrix.coverage != 'xdebug'
-        run: vendor/bin/phpunit
+      - name: Upload Coverage
+        uses: nick-invision/retry@v2
         env:
-          DB: ${{ matrix.db }}
-
-      - name: Upload Scrutinizer coverage
-        if: matrix.coverage == 'xdebug'
-        uses: sudo-bot/action-scrutinizer@latest
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_PARALLEL: 'true'
+          COVERALLS_FLAG_NAME: 'db:${{ matrix.db }} laravel:${{ steps.package-versions.outputs.laravel }} compoships:${{ steps.package-versions.outputs.compoships }} eloquent-eager-limit:${{ steps.package-versions.outputs.eloquent-eager-limit }}'
         with:
-          cli-args: "--format=php-clover build/logs/clover.xml"
+          timeout_minutes: 1
+          max_attempts: 3
+          command: |
+            composer global require php-coveralls/php-coveralls
+            php-coveralls --coverage_clover=build/logs/clover.xml -v
+
+  coverage-aggregation:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Aggregate Coverage
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
