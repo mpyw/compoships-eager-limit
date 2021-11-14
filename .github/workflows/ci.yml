@@ -64,12 +64,12 @@ jobs:
 
     strategy:
       matrix:
-        php: [8.0, 7.4, 7.3]
+        php: ['8.0', 7.4, 7.3]
         lib:
-          - { laravel: ^8.0, testbench: ^6.0 }
-          - { laravel: ^7.0, testbench: ^5.0 }
-          - { laravel: ^6.0, testbench: ^4.0 }
-        composer_flags: [--prefer-stable --prefer-lowest, --prefer-stable]
+          - { laravel: ^8.0, eager: ^1.6 }
+          - { laravel: ^7.0, eager: ^1.5 }
+          - { laravel: ^6.0, eager: ^1.4 }
+        flags: [--prefer-lowest, '']
         db: [mysql-5.7, mysql-8.0, pgsql, sqlite, sqlsrv]
 
     steps:
@@ -104,14 +104,9 @@ jobs:
 
       - name: Adjust Package Versions
         run: |
-          composer require "laravel/framework:${{ matrix.lib.laravel }}" --dev --no-update ${{ matrix.lib.composer_flags }}
-          if php -r 'exit((int)!version_compare(PHP_VERSION, "8", ">="));'; then
-            composer require "orchestra/testbench:>=4.14" --dev --no-update ${{ matrix.lib.composer_flags }}
-            composer require "phpunit/phpunit:>=9.3" --dev --no-update ${{ matrix.lib.composer_flags }}
-          else
-            composer require "orchestra/testbench:${{ matrix.lib.testbench }}" --dev --no-update ${{ matrix.lib.composer_flags }}
-          fi
-          composer update ${{ matrix.lib.composer_flags }}
+          composer require "laravel/framework:${{ matrix.lib.laravel }}" --dev --no-update ${{ matrix.flags }}
+          composer require "staudenmeir/eloquent-eager-limit:${{ matrix.lib.eager }}" --no-update ${{ matrix.flags }}
+          composer update ${{ matrix.flags }}
 
       - name: Show Important Package Versions
         id: package-versions
