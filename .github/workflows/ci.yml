@@ -64,13 +64,21 @@ jobs:
 
     strategy:
       matrix:
-        php: ['8.0', 7.4, 7.3]
+        php: [8.1, '8.0', 7.4, 7.3]
         lib:
+          - { laravel: ^9.0, eager: ^1.7 }
           - { laravel: ^8.0, eager: ^1.6 }
           - { laravel: ^7.0, eager: ^1.5 }
           - { laravel: ^6.0, eager: ^1.4 }
         flags: [--prefer-lowest, '']
         db: [mysql-5.7, mysql-8.0, pgsql, sqlite, sqlsrv]
+        exclude:
+          - { php: 8.1, flags: --prefer-lowest } # Error about #[\ReturnTypeWillChange]
+          - { php: 8.1, lib: { laravel: ^7.0, eager: ^1.5 } }
+          - { php: 8.1, lib: { laravel: ^6.0, eager: ^1.4 } }
+          - { php: 7.4, lib: { laravel: ^9.0, eager: ^1.7 } }
+          - { php: 7.3, lib: { laravel: ^9.0, eager: ^1.7 } }
+          - { php: 7.3, lib: { laravel: ^6.0, eager: ^1.4 }, db: sqlsrv } # Unknown Error about Carbon
 
     steps:
       - uses: actions/checkout@v2
