@@ -6,5 +6,5 @@ use Staudenmeir\EloquentEagerLimit\Grammars\SQLiteGrammar as EagerLimitSQLiteGra
 
 class SQLiteGrammar extends EagerLimitSQLiteGrammar
 {
-    use Concerns\CompilesGroupLimitByMultipleColumnPartition;
+    use Concerns\CompilesSQLiteGroupLimitByMultipleColumnPartition;
 }

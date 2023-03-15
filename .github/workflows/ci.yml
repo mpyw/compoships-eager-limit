@@ -64,41 +64,27 @@ jobs:
 
     strategy:
       matrix:
-        php: [8.1, '8.0', 7.4, 7.3]
+        php: ['8.0', 8.1, 8.2]
         lib:
-          - { laravel: ^9.0, eager: ^1.7 }
-          - { laravel: ^8.0, eager: ^1.6 }
-          - { laravel: ^7.0, eager: ^1.5 }
-          - { laravel: ^6.0, eager: ^1.4 }
+#          - { laravel: ^11.0 }
+          - { laravel: ^10.0 }
+          - { laravel: ^9.0 }
         flags: [--prefer-lowest, '']
         db: [mysql-5.7, mysql-8.0, pgsql, sqlite, sqlsrv]
         exclude:
+          - { php: 8.0, lib: { laravel: ^10.0 } }
+#          - { php: 8.0, lib: { laravel: ^11.0 } }
           - { php: 8.1, flags: --prefer-lowest } # Error about #[\ReturnTypeWillChange]
-          - { php: 8.1, lib: { laravel: ^7.0, eager: ^1.5 } }
-          - { php: 8.1, lib: { laravel: ^6.0, eager: ^1.4 } }
-          - { php: 7.4, lib: { laravel: ^9.0, eager: ^1.7 } }
-          - { php: 7.3, lib: { laravel: ^9.0, eager: ^1.7 } }
-          - { php: 7.3, lib: { laravel: ^6.0, eager: ^1.4 }, db: sqlsrv } # Unknown Error about Carbon
+#          - { php: 8.1, lib: { laravel: ^11.0 } }
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           coverage: xdebug
-
-      - name: Set up MySQL 8.0
-        if: matrix.db == 'mysql-8.0'
-        run: |
-          mysql \
-            --host=127.0.0.1 \
-            --port=3307 \
-            --user=root \
-            --password=testing <<< "
-              ALTER USER 'testing'@'%' IDENTIFIED WITH mysql_native_password BY 'testing';
-            "
 
       - name: Set up SQLServer
         if: matrix.db == 'sqlsrv'
@@ -113,16 +99,15 @@ jobs:
       - name: Adjust Package Versions
         run: |
           composer require "laravel/framework:${{ matrix.lib.laravel }}" --dev --no-update ${{ matrix.flags }}
-          composer require "staudenmeir/eloquent-eager-limit:${{ matrix.lib.eager }}" --no-update ${{ matrix.flags }}
           composer update ${{ matrix.flags }}
 
       - name: Show Important Package Versions
         id: package-versions
         run: |
           composer show | grep -E '(^awobaz/compoships)|(^staudenmeir/eloquent-eager-limit)|(^laravel/framework)|(^orchestra/testbench)|(^phpunit/phpunit)'
-          echo '::set-output name=compoships::'$(composer show | grep -E '^(awobaz/compoships)' | awk '{print $2}')
-          echo '::set-output name=eloquent-eager-limit::'$(composer show | grep -E '^(staudenmeir/eloquent-eager-limit)' | awk '{print $2}')
-          echo '::set-output name=laravel::'$(composer show | grep -E '^(laravel/framework)' | awk '{print $2}')
+          echo 'name=compoships::'$(composer show | grep -E '^(awobaz/compoships)' | awk '{print $2}') > "$GITHUB_OUTPUT"
+          echo 'name=eloquent-eager-limit::'$(composer show | grep -E '^(staudenmeir/eloquent-eager-limit)' | awk '{print $2}') > "$GITHUB_OUTPUT"
+          echo 'name=laravel::'$(composer show | grep -E '^(laravel/framework)' | awk '{print $2}') > "$GITHUB_OUTPUT"
 
       - name: Prepare Database Config
         run: mv tests/config/database.github.php tests/config/database.php

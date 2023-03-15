@@ -2,11 +2,15 @@
 
 namespace Mpyw\ComposhipsEagerLimit\Database\Query\Grammar\Concerns;
 
+use Staudenmeir\EloquentEagerLimit\Grammars\Traits\CompilesGroupLimit;
+
 /**
  * Trait CompilesGroupLimitByMultipleColumnPartition
  */
 trait CompilesGroupLimitByMultipleColumnPartition
 {
+    use CompilesGroupLimit;
+
     /**
      * Compile a row number clause.
      *

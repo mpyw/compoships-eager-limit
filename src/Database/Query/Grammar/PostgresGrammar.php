@@ -6,5 +6,5 @@ use Staudenmeir\EloquentEagerLimit\Grammars\PostgresGrammar as EagerLimitPostgre
 
 class PostgresGrammar extends EagerLimitPostgresGrammar
 {
-    use Concerns\CompilesGroupLimitByMultipleColumnPartition;
+    use Concerns\CompilesPostgresGroupLimitByMultipleColumnPartition;
 }
