@@ -2,6 +2,9 @@
 
 [topclaudy/compoships](https://github.com/topclaudy/compoships) + [staudenmeir/eloquent-eager-limit](https://github.com/staudenmeir/eloquent-eager-limit)
 
+> [!CAUTION]
+> [staudenmeir/eloquent-eager-limit](https://github.com/staudenmeir/eloquent-eager-limit) has been merged into the core since Laravel 11. Therefore, it should have been enough to install [topclaudy/compoships](https://github.com/topclaudy/compoships) separately... However, as of March 2025, PR [topclaudy/compoships#180](https://github.com/topclaudy/compoships/pull/180) has not yet been merged. Once we have seen this merged, we will abandon the package.
+
 ## Requirements
 
 - PHP: `^8.0`
