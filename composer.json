@@ -19,7 +19,15 @@
             "homepage": "https://github.com/staudenmeir"
         }
     ],
-    "keywords": ["compoships", "composite", "eloquent", "eager", "limit", "laravel", "database"],
+    "keywords": [
+        "compoships",
+        "composite",
+        "eloquent",
+        "eager",
+        "limit",
+        "laravel",
+        "database"
+    ],
     "autoload": {
         "psr-4": {
             "Mpyw\\ComposhipsEagerLimit\\": "src/"
@@ -32,8 +40,8 @@
     },
     "require": {
         "php": "^8.0",
-        "illuminate/database": "^9.0 || ^10.0 || ^11.0",
-        "illuminate/support": "^9.0 || ^10.0 || ^11.0",
+        "illuminate/database": "^9.0 || ^10.0 || ^11.0 || ^12.0",
+        "illuminate/support": "^9.0 || ^10.0 || ^11.0 || ^12.0",
         "awobaz/compoships": "^2.0.4",
         "staudenmeir/eloquent-eager-limit": "^1.7.1"
     },
@@ -41,7 +49,7 @@
         "orchestra/testbench": "*",
         "orchestra/testbench-core": ">=7.0",
         "phpunit/phpunit": ">=9.5",
-        "nesbot/carbon": "^2.62.1",
+        "nesbot/carbon": "^2.62.1 || ^3.8.4",
         "ext-json": "*"
     },
     "minimum-stability": "dev",
