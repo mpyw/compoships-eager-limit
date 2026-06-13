@@ -2,8 +2,16 @@
 
 [topclaudy/compoships](https://github.com/topclaudy/compoships) + [staudenmeir/eloquent-eager-limit](https://github.com/staudenmeir/eloquent-eager-limit)
 
-> [!CAUTION]
-> [staudenmeir/eloquent-eager-limit](https://github.com/staudenmeir/eloquent-eager-limit) has been merged into the core since Laravel 11. Therefore, it should have been enough to only install [topclaudy/compoships](https://github.com/topclaudy/compoships)... However, as of March 2025, PR [topclaudy/compoships#180](https://github.com/topclaudy/compoships/pull/180) has not yet been merged. Once we have seen this merged, we will abandon the package.
+> [!WARNING]
+> **This package is abandoned and no longer maintained.**
+>
+> [staudenmeir/eloquent-eager-limit](https://github.com/staudenmeir/eloquent-eager-limit) has been merged into the core since Laravel 11, and PR [topclaudy/compoships#180](https://github.com/topclaudy/compoships/pull/180) — which adds native `limit()`/`offset()` support to composite-key eager loads — was merged on 2025-10-03 and shipped in [topclaudy/compoships](https://github.com/topclaudy/compoships) `^3.0`. Both pieces this wrapper used to glue together are now available upstream, so the package is no longer needed.
+>
+> **Migration:** depend on [`topclaudy/compoships`](https://github.com/topclaudy/compoships) `^3.0` directly and call `limit()` inside your eager-load closures. On Laravel 11+ no extra trait is required.
+>
+> ```php
+> $posts = Post::with(['authorComments' => fn ($query) => $query->limit(3)->offset(1)])->get();
+> ```
 
 ## Requirements
 
